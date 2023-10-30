@@ -1,4 +1,8 @@
 import pandas as pd
+from matplotlib.pyplot import pyplot as plt
+import numpy as np
+from scipy import stats
+
 
 ###############################################################################################################
 #Calcule la puissance consommée par jour pour les batiments
@@ -69,4 +73,50 @@ mean_temperature_vector = df['Mean temperature'].to_numpy()
 
 print("Moyennes de température quotidiennes calculées et ajoutées avec succès.")
 print('Le vecteur Python "mean_temperature_vector" a été créé.')
+
+#modification ALeveaux
+def Energy_signature_plot (Daily_Temperature_Avg , P_mean)
+
+    tolerance = 0.1
+    m = 0
+    k= 0
+    for i in range len(Daily_Temperature_Avg): #évaluation de la taille des tableaux pour régression linéaire
+
+        if P_mean[i]< tolerance:
+            m+=1
+        
+        else:
+            k+=1
+
+    first_part= np.zeros(k)
+    second_part= np.zeros(m)
+    k = 0
+    m = 0
+    i=0
+
+    for i in range len(Daily_Temperature_Avg):
+
+        if P_mean[i]< tolerance:
+            second_part_P[m] = P_mean[i]
+            second_part_T[m] = Daily_Temperature_Avg[i]
+            m += 1
+
+        else:
+            first_part_P[k] = P_mean[i]
+            first_part_T[k] = Daily_Temperature_Avg[i]
+            k += 1
+    
+    slope1, intercept1, r_value1, p_value1, std_err1 = stats.linregress(first_part_T, first_part_P)
+
+    slope2, intercept2, r_value2, p_value2, std_err2 = stats.linregress(second_part_T, second_part_P)
+
+    def interp1(x)
+        return slope1*x + intercept1
+
+     def interp2(x)
+        return slope2*x + intercept2
+
+plt.scatter(Daily_Temperature_Avg, P_mean)
+plt.plot()
+
 
