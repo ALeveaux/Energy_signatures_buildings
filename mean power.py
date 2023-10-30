@@ -33,13 +33,13 @@ print('Le vecteur Python "p_per_day_vector" a été créé.')
 
 
 ###############################################################################################################
-#Uniformisation des dates du fichier"
+# Uniformisation des dates du fichier
 # Chargez le fichier Excel
 file_path = "Building_Data_Template_Agora1+2.xlsx"
 df = pd.read_excel(file_path, sheet_name="Meteo")
 
 # Convertissez toutes les dates en format "2021-01-01 00:00:00"
-df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%Y-%m-%d %H:%M:%S')
 df['Date'] = df['Date'].dt.strftime('%Y-%m-%d %H:%M:%S')
 
 # Sauvegardez les données mises à jour dans le fichier Excel
@@ -47,23 +47,26 @@ df.to_excel(file_path, sheet_name="Meteo", index=False)
 
 print("Format de date uniformisé avec succès.")
 
+# Calcule de la température moyenne par jour
+# Convertissez la colonne "Date" en datetime si ce n'est pas déjà fait
+df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d %H:%M:%S')
 
-
-
-
-###############################################################################################################
-#Calcule de la température moyenne par jour
 # Calculez la moyenne de la température par jour
 daily_temperature_avg = df.groupby(df['Date'].dt.date)['Temperature'].mean().reset_index()
 
 # Renommez la colonne "Temperature" en "Daily_Temperature_Avg"
 daily_temperature_avg = daily_temperature_avg.rename(columns={'Temperature': 'Daily_Temperature_Avg'})
 
-# Créez une nouvelle colonne "O" pour stocker les moyennes quotidiennes
+# Créez une nouvelle colonne "Mean temperature" pour stocker les moyennes quotidiennes
 df['Mean temperature'] = daily_temperature_avg['Daily_Temperature_Avg']
 
 # Sauvegardez les données mises à jour dans le fichier Excel
 df.to_excel(file_path, sheet_name="Meteo", index=False)
 
 print("Moyennes de température quotidiennes calculées et ajoutées avec succès.")
+
+mean_temperature_vector = df['Mean temperature'].to_numpy()
+
+print("Moyennes de température quotidiennes calculées et ajoutées avec succès.")
+print('Le vecteur Python "mean_temperature_vector" a été créé.')
 
