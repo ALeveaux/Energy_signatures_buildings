@@ -1,35 +1,35 @@
 import pandas as pd
 
 ###############################################################################################################
-#Calcule la moyenne des puissances pour les batiments
-# Charger le fichier Excel
-fichier_entree = 'Our_name.xlsx' #nom de notre fichier excel pour nos batiments
-df = pd.read_excel(fichier_entree)
+#Calcule la puissance consommée par jour pour les batiments
 
-# Convertir la colonne "DATETIME" en objets datetime
-df['DATETIME'] = pd.to_datetime(df['DATETIME'], format='%d-%m-%Y %H:%M:%S')
+# Charge le fichier Excel
+df = pd.read_excel("B06e_c.xlsx")
 
-# Calculer la moyenne de la colonne "P" par jour
-moyennes_par_jour = df.groupby(df['DATETIME'].dt.date)['P'].mean().reset_index()
-moyennes_par_jour.columns = ['Date', 'P_mean']
+# Étape 1 : Multiplie la colonne "P" par 60
+df["P*60"] = df["P"] * 60
 
-# Charger le fichier Excel de sortie
-fichier_sortie = 'Our_name.xlsx'
+# Étape 2 : Convertit la colonne "DATETIME" en type datetime
+df["DATETIME"] = pd.to_datetime(df["DATETIME"])
 
-# Copier les données existantes dans le fichier de sortie
-writer = pd.ExcelWriter(fichier_sortie, engine='openpyxl')
-writer.book = writer.book
-writer.sheets = {ws.title: ws for ws in writer.book.worksheets}
+# Étape 3 : Crée une colonne "Date" avec la date seule (sans l'heure)
+df["Date"] = df["DATETIME"].dt.date
 
-# Ajouter la moyenne quotidienne à la colonne "G" du fichier de sortie
-moyennes_par_jour.to_excel(writer, index=False, header=False, sheet_name='Feuil1', startcol=6)
+# Étape 4 : Calcule la somme de "P*60" pour chaque jour
+daily_consumption = df.groupby("Date")["P*60"].sum().reset_index()
+daily_consumption.rename(columns={"P*60": ""}, inplace=True)
 
-# Enregistrer les modifications dans le fichier Excel de sortie
-writer.save()
+# Insère la colonne "P per day" à la 7e position
+df.insert(6, "P per day", daily_consumption[""])
 
-print("Moyennes quotidiennes ajoutées avec succès dans le fichier", fichier_sortie)
+# Sauvegarde le fichier Excel modifié
+df.to_excel("B06e_c_with_vector.xlsx", index=False)
 
+# Convertit la colonne "P per day" en un vecteur Python
+P_mean = df["P per day"].values
 
+print('Le fichier Excel est créé et disponible.')
+print('Le vecteur Python "p_per_day_vector" a été créé.')
 
 
 ###############################################################################################################
