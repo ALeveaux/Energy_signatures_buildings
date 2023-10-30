@@ -75,12 +75,12 @@ print("Moyennes de température quotidiennes calculées et ajoutées avec succè
 print('Le vecteur Python "mean_temperature_vector" a été créé.')
 
 #modification ALeveaux
-def Energy_signature_plot (Daily_Temperature_Avg , P_mean)
+def Energy_signature_plot (mean_temperature_vector , P_mean)
 
     tolerance = 0.1
     m = 0
     k= 0
-    for i in range len(Daily_Temperature_Avg): #évaluation de la taille des tableaux pour régression linéaire
+    for i in range len(mean_temperature_vector): #évaluation de la taille des tableaux pour régression linéaire
 
         if P_mean[i]< tolerance:
             m+=1
@@ -94,16 +94,16 @@ def Energy_signature_plot (Daily_Temperature_Avg , P_mean)
     m = 0
     i=0
 
-    for i in range len(Daily_Temperature_Avg):
+    for i in range len(mean_temperature_vector):
 
         if P_mean[i]< tolerance:
             second_part_P[m] = P_mean[i]
-            second_part_T[m] = Daily_Temperature_Avg[i]
+            second_part_T[m] = mean_temperature_vector[i]
             m += 1
 
         else:
             first_part_P[k] = P_mean[i]
-            first_part_T[k] = Daily_Temperature_Avg[i]
+            first_part_T[k] = mean_temperature_vector[i]
             k += 1
     
     slope1, intercept1, r_value1, p_value1, std_err1 = stats.linregress(first_part_T, first_part_P)
@@ -116,7 +116,7 @@ def Energy_signature_plot (Daily_Temperature_Avg , P_mean)
      def interp2(x)
         return slope2*x + intercept2
 
-plt.scatter(Daily_Temperature_Avg, P_mean)
+plt.scatter(mean_temperature_vector, P_mean)
 plt.plot()
 
 
